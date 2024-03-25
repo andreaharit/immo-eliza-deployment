@@ -125,6 +125,5 @@ def price_prediction(data: House):
     return {'prediction': round(predict.result,0)}
 
 
-if __name__ == '__main__':
-    uvicorn.run("app:app")
+
 
