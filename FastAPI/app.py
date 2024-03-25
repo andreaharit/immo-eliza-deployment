@@ -8,13 +8,15 @@ import joblib
 import json
 
 
+PORT = os.environ.get("PORT", 8000)
 
 app = FastAPI(
     title="Belgian House prediction",
     version="0.0.1",
     summary="API for returning the price prediction for a house in Belgium.",
     contact = {"name": "Andrea Harit", "url": "https://github.com/andreaharit/immo-eliza-deployment"},
-    description= description
+    description= description,
+    port=PORT
 )
 
 # Initializates Basemodel with type checking
