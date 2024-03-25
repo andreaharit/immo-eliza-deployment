@@ -3,11 +3,19 @@ from typing import Annotated, Literal
 from fastapi import FastAPI, Path, HTTPException
 from pydantic import BaseModel
 from predict import Predict
+from description import description
 import joblib
 import json
 
 
-app = FastAPI()
+
+app = FastAPI(
+    title="Belgian House prediction",
+    version="0.0.1",
+    summary="API for returning the price prediction for a house in Belgium.",
+    contact = {"name": "Andrea Harit", "url": "https://github.com/andreaharit/immo-eliza-deployment"},
+    description= description
+)
 
 # Initializates Basemodel with type checking
 class House (BaseModel):    
@@ -45,6 +53,10 @@ class House (BaseModel):
             }
         }
 
+@app.get("/")
+async def root():
+    message = "Welcome to the Belgian price prediction API, for prediction please refer to /predict."
+    return {"message": message}
 
 @app.post("/predict")
 def price_prediction(data: House):
