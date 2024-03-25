@@ -8,15 +8,15 @@ import joblib
 import json
 
 
-PORT = os.environ.get("PORT", 8000)
+
 
 app = FastAPI(
     title="Belgian House prediction",
     version="0.0.1",
     summary="API for returning the price prediction for a house in Belgium.",
     contact = {"name": "Andrea Harit", "url": "https://github.com/andreaharit/immo-eliza-deployment"},
-    description= description,
-    port=PORT
+    description= description
+   
 )
 
 # Initializates Basemodel with type checking
@@ -126,5 +126,5 @@ def price_prediction(data: House):
 
 
 if __name__ == '__main__':
-    uvicorn.run("api:app",reload=True)
+    uvicorn.run("app:app")
 
