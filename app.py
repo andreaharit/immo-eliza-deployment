@@ -8,8 +8,6 @@ import joblib
 import json
 
 
-
-
 app = FastAPI(
     title="Belgian House prediction",
     version="0.0.1",
@@ -124,6 +122,7 @@ def price_prediction(data: House):
 
     return {'prediction': round(predict.result,0)}
 
-
-
-
+    
+"""if __name__ == '__main__':
+    uvicorn.run(app)
+"""
