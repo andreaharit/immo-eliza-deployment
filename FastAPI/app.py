@@ -7,7 +7,7 @@ from description import description
 import joblib
 import json
 
-
+# Initializes API with information as parameters
 app = FastAPI(
     title="Belgian House prediction",
     version="0.0.1",
@@ -34,6 +34,7 @@ class House (BaseModel):
     epc: Annotated[str, Path(title="EPC score A++ to G.")]
     area_total: Annotated[int, Path(title="Size of the house sqm, must be bigger than 18sqm", gt = 17)]
 
+    # Builds example json for the API docs
     class Config:
         json_schema_extra = {
             'example': {
@@ -53,16 +54,19 @@ class House (BaseModel):
             }
         }
 
+
 @app.get("/")
 async def root():
     message = "Welcome to the Belgian price prediction API, for prediction please refer to /predict."
     return {"message": message}
 
-@app.post("/predict")
+@app.post("/")
 def price_prediction(data: House):
 
+    # Values for validation
+
     group_epc = {"A++": 9 , "A+": 8, "A": 7, "B":6, "C":5, "D":4, "E":3, "F":2, "G": 1}
-    epcs = ["A++", "A+", "A", "B", "C", "D", "E", "F", "G"]   
+
 
     districts =  ["Aalst", "Antwerp", "Arlon", "Ath", "Bastogne", "Brugge", "Brussels", "Charleroi", "Dendermonde", 
 "Diksmuide", "Dinant", "Eeklo", "Gent", "Halle-Vilvoorde", "Hasselt", "Huy", "Ieper", "Kortrijk", "Leuven", "Liège", 
@@ -72,10 +76,10 @@ def price_prediction(data: House):
 
     states = ["GOOD", "JUST_RENOVATED", "AS_NEW", "TO_RENOVATE", "AS_NEW", "TO_RESTORE", "TO_BE_DONE_UP"]
 
-
+    # Grabs the data from the user
     data = data.dict()
 
-    # Validations:
+    # Makes validations
     if data["district"] not in districts:
         error_message = "Invalid District. Please use one of those:  " + str(districts)
         raise HTTPException(status_code=422, detail=error_message)
@@ -85,44 +89,29 @@ def price_prediction(data: House):
     if data["epc"] not in list(group_epc.keys()):
         error_message = "Invalid EPC. Please use one of those:  " + str(list(group_epc.keys()))
         raise HTTPException(status_code=422, detail=error_message)
-
-    district = data["district"]
-    state_construction = data["state_construction"]
-    living_area = data["living_area"]
-    bedrooms = data["bedrooms"]
-    bathrooms = data["bathrooms"]
-    facades = data["facades"]
-    has_garden = data["has_garden"]
-    has_equipped_kitchen = data["has_equipped_kitchen"]
-    has_terrace = data["has_terrace"]
-    has_attic = data["has_attic"]
-    has_basement = data["has_basement"]
-    epc_string = data["epc"]
-    epc = group_epc[epc_string]
-    area_total = data["area_total"]
-
-
+  
+    # Builds dictionary to be used for prediction
     test = {
-            "district": district,
-            "state_construction": state_construction,
-            "living_area": living_area,
-            "bedrooms": bedrooms,
-            "bathrooms": bathrooms,
-            "facades": facades,
-            "has_garden": has_garden,
-            "kitchen": has_equipped_kitchen,
-            "has_terrace": has_terrace,
-            "has_attic": has_attic,
-            "has_basement": has_basement,
-            "epc": epc,
-            "area_total": area_total
+            "district": data["district"],
+            "state_construction": data["state_construction"],
+            "living_area": data["living_area"],
+            "bedrooms": data["bedrooms"],
+            "bathrooms": data["bathrooms"],
+            "facades": data["facades"],
+            "has_garden": data["has_garden"],
+            "kitchen": data["has_equipped_kitchen"],
+            "has_terrace": data["has_terrace"],
+            "has_attic": data["has_attic"],
+            "has_basement": data["has_basement"],
+            "epc": group_epc[data["epc"]],
+            "area_total": data["area_total"]
             }
-
+    # Makes prediction and returns it
     predict =  Predict(test)
 
     return {'prediction': round(predict.result,0)}
 
     
-"""if __name__ == '__main__':
+if __name__ == '__main__':
     uvicorn.run(app)
-"""
+

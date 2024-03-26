@@ -1,7 +1,38 @@
 import pandas as pd
 import streamlit as st
 from predict import Predict
+import plotly.express as px
 
+
+
+class Plots:
+    def __init__(self, file):
+        dataframe = pd.read_csv(file)
+        dataframe ["price_sqm_total"] = dataframe ["price"]/dataframe ["living_area"]
+        self.dataframe = dataframe
+
+    @ staticmethod
+    def thousants_point(x: int) -> str:  
+        return str('{:,}'.format(round(x)).replace(',','.'))
+    
+    def price_sqm (self, district, prediction, living_area):
+        df = self.dataframe
+        mask = df["district"] == district
+        subset_district = df[mask]
+
+        average_price = subset_district["price_sqm_total"].mean()
+        text_average_price = "Average €" + self.thousants_point(int(average_price)) + "/m²" 
+
+        # text prediction
+        price_sqm_predict = prediction/living_area
+        text_pred = "Your house €" + thousants_point(int(price_sqm_predict))  + "/m²"
+
+        # Starts setting up the histogram
+        fig = px.histogram(subset_district,  x="price_sqm_total", title=f"Number of houses versus price/m² in {district}", labels ={"price_sqm_total": "Price per living area (€/m²)"}) 
+        fig.add_vline(x=average_price,annotation=dict(font_size=15), line_dash = 'dash', line_color = 'firebrick', annotation_text= text_average_price, annotation_position="top")
+        fig.add_vline(x=price_sqm_predict,annotation=dict(font_size=15), line_dash = 'dash', line_color = 'green', annotation_text= text_pred, annotation_position="top left")
+        fig.update_layout(bargap=0.2)
+        return fig
 
 def main():
 
@@ -88,6 +119,13 @@ def main():
     if st.button(label = "Predict Price"):
         predict =  Predict(data)
         st.success(f"The predicted price for your house is €{int(predict.result)}.")
+
+        data_plot = "./plots/cleaned_houses.csv"
+        plots = Plots(data_plot)
+        price_plot = plots.price_sqm(district = district, prediction = predict, living_area = living_area)
+
+        st.plotly_chart(price_plot , use_container_width=False, sharing="streamlit", theme="streamlit", **kwargs)
+    
     
 
 
