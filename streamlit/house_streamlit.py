@@ -2,37 +2,9 @@ import pandas as pd
 import streamlit as st
 from predict import Predict
 import plotly.express as px
+from plots.plots import Plots
 
 
-
-class Plots:
-    def __init__(self, file):
-        dataframe = pd.read_csv(file)
-        dataframe ["price_sqm_total"] = dataframe ["price"]/dataframe ["living_area"]
-        self.dataframe = dataframe
-
-    @ staticmethod
-    def thousants_point(x: int) -> str:  
-        return str('{:,}'.format(round(x)).replace(',','.'))
-    
-    def price_sqm (self, district, prediction, living_area):
-        df = self.dataframe
-        mask = df["district"] == district
-        subset_district = df[mask]
-
-        average_price = subset_district["price_sqm_total"].mean()
-        text_average_price = "Average €" + self.thousants_point(int(average_price)) + "/m²" 
-
-        # text prediction
-        price_sqm_predict = prediction/living_area
-        text_pred = "Your house €" + thousants_point(int(price_sqm_predict))  + "/m²"
-
-        # Starts setting up the histogram
-        fig = px.histogram(subset_district,  x="price_sqm_total", title=f"Number of houses versus price/m² in {district}", labels ={"price_sqm_total": "Price per living area (€/m²)"}) 
-        fig.add_vline(x=average_price,annotation=dict(font_size=15), line_dash = 'dash', line_color = 'firebrick', annotation_text= text_average_price, annotation_position="top")
-        fig.add_vline(x=price_sqm_predict,annotation=dict(font_size=15), line_dash = 'dash', line_color = 'green', annotation_text= text_pred, annotation_position="top left")
-        fig.update_layout(bargap=0.2)
-        return fig
 
 def main():
 
@@ -65,13 +37,13 @@ def main():
     st.write ("")
 
     district = st.selectbox(label = "In which district is the house located?", options = districts)
-    area_total = st.number_input(label = "What is the total area of the house (m²)?", min_value = 17.0, max_value= 500.0, step = 0.5 )
-    living_area = st.number_input(label = "What is the total living area (m²)?", min_value = 17.0, max_value= 500.0, step = 0.5 )
+    area_total = st.number_input(label = "What is the total area of the house (m²)?", min_value = 50.0, max_value= 1500.0, step = 0.5 )
+    living_area = st.number_input(label = "What is the total living area (m²)?", min_value = 50.0, max_value= 350.0, step = 0.5 )
 
     select_state = st.selectbox (label = "What is the state of the house?", options= list(states.keys()), index = 1)
     select_epc = st.select_slider(label ="What is the house's EPC?", options = (list(epcs.keys())), value = "A")
-    bedrooms = st.slider(label = "What is the number of bedrooms?", min_value=1, max_value= 10)
-    bathrooms = st.slider(label = "What is the number of bathrooms?", min_value=1, max_value= 3)
+    bedrooms = st.slider(label = "What is the number of bedrooms?", min_value=1, max_value= 15)
+    bathrooms = st.slider(label = "What is the number of bathrooms?", min_value=1, max_value= 10)
     facades = st.slider(label = "How many exposed façades?", min_value=1, max_value=4)
 
     st.write('Does the house have a garden?')
@@ -120,16 +92,25 @@ def main():
         predict =  Predict(data)
         st.success(f"The predicted price for your house is €{int(predict.result)}.")
 
+        st.write (f"Your house compared to others in {district}:")
+
         data_plot = "./plots/cleaned_houses.csv"
-        plots = Plots(data_plot)
-        price_plot = plots.price_sqm(district = district, prediction = predict, living_area = living_area)
+        plots = Plots(file = data_plot, district = district )
+        price_plot = plots.price_sqm(prediction = predict.result, living_area = living_area)
+        
+        st.plotly_chart(price_plot , use_container_width=True, sharing="streamlit", theme="streamlit")      
 
-        st.plotly_chart(price_plot , use_container_width=False, sharing="streamlit", theme="streamlit", **kwargs)
+        
+
+        # Bedroom pie
+        pie_bedroom = plots.pie_chart(feature="bedrooms", feature_name="Bedrooms", home_value= bedrooms)
+        st.plotly_chart(pie_bedroom , use_container_width=True, sharing="streamlit", theme="streamlit")
+
+        # Bathroom pie
+        pie_bathroom = plots.pie_chart(feature="bathrooms", feature_name="Bathrooms", home_value= bathrooms)
+        st.plotly_chart(pie_bathroom , use_container_width=True, sharing="streamlit", theme="streamlit")
     
-    
-
-
-
+ 
 
 
 if __name__ == "__main__":
