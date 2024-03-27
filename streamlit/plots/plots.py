@@ -32,7 +32,7 @@ class Plots:
         # Starts setting up the histogram
                 
         fig = px.histogram(subset_district,  x="price_sqm_total", 
-        labels ={"price_sqm_total": "Price per living area (€/m²)"}).update_layout(yaxis_title=f"No houses in {district}") 
+        labels ={"price_sqm_total": f"Price per living area (€/m²) in {district}"}).update_layout(yaxis_title=f"Houses Count") 
        
         fig.add_shape(type="line", x0=average_price, x1=average_price,  yref="paper", y0=0.1, y1=0.9, line=dict(color="Green",width=2))
         fig.add_annotation(x=average_price,  y= 0,
@@ -65,21 +65,26 @@ class Plots:
         pull = df_room[feature_name] == home_value
         pull = pull * 0.1 
 
-        fig = go.Figure(data=[go.Pie(labels=df_room[feature_name], texttemplate="%{label}<br>"
-                     "%{percent:.1%}",values=df_room.Count, textinfo='label+percent', hole=.4, pull=pull,
-                      showlegend=False, marker=dict(colors=px.colors.qualitative.Plotly),
-                      hovertemplate="<b>Number</b>: %{label}<br>"
-              # See docs for information on d3 formatting
+        fig = go.Figure(
+            data=[go.Pie(labels=df_room[feature_name], 
+            texttemplate="<b>%{label}</b><br>""%{percent:.1%}",
+            values=df_room.Count, 
+            hole=.4, 
+            pull=pull,
+            showlegend=False, 
+            marker=dict(colors=px.colors.qualitative.Plotly),
+            hovertemplate="<b>Number</b>: %{label}<br>"
               "<b>Houses Count:</b>: %{value}<br>"
               "<b>Percentage</b>: %{percent:.1%}<br>"
-              "<extra></extra>")])
+                        )
+                ]             
+        )
 
         fig.update_layout(
             # Add annotations in the center of the donut.
-            annotations=[
-                
+            annotations=[                              
                 dict(
-                    text=feature_name,
+                    text="<b>{name}</b></br></br>Yours has {home_value}.".format(name=feature_name.upper(), home_value = home_value),
                  
                     # Hide the arrow that points to the [x,y] coordinate
                     showarrow=False

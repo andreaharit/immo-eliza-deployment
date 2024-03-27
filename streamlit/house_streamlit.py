@@ -94,21 +94,28 @@ def main():
 
         st.write (f"Your house compared to others in {district}:")
 
+        # Start plots      
+
+        
+
+
         data_plot = "./plots/cleaned_houses.csv"
         plots = Plots(file = data_plot, district = district )
         price_plot = plots.price_sqm(prediction = predict.result, living_area = living_area)
         
         st.plotly_chart(price_plot , use_container_width=True, sharing="streamlit", theme="streamlit")      
 
-        
+        col1, col2 = st.columns(2)
 
-        # Bedroom pie
-        pie_bedroom = plots.pie_chart(feature="bedrooms", feature_name="Bedrooms", home_value= bedrooms)
-        st.plotly_chart(pie_bedroom , use_container_width=True, sharing="streamlit", theme="streamlit")
+        with col1: 
 
-        # Bathroom pie
-        pie_bathroom = plots.pie_chart(feature="bathrooms", feature_name="Bathrooms", home_value= bathrooms)
-        st.plotly_chart(pie_bathroom , use_container_width=True, sharing="streamlit", theme="streamlit")
+            # Bedroom pie
+            pie_bedroom = plots.pie_chart(feature="bedrooms", feature_name="Bedrooms", home_value= bedrooms)
+            st.plotly_chart(pie_bedroom , use_container_width=True, sharing="streamlit", theme="streamlit")
+        with col2:
+            # Bathroom pie
+            pie_bathroom = plots.pie_chart(feature="bathrooms", feature_name="Bathrooms", home_value= bathrooms)
+            st.plotly_chart(pie_bathroom , use_container_width=True, sharing="streamlit", theme="streamlit")
     
  
 
