@@ -1,8 +1,8 @@
 import pandas as pd
 import streamlit as st
-from predict import Predict
 import plotly.express as px
 from plots.plots import Plots
+import requests
 
 
 
@@ -37,7 +37,7 @@ def main():
     st.write ("")
 
     district = st.selectbox(label = "In which district is the house located?", options = districts)
-    area_total = st.number_input(label = "What is the total area of the house (m²)?", min_value = 50.0, max_value= 1500.0, step = 0.5 )
+    area_total = st.number_input(label = "What is the total area of the house (m²)?", min_value = 50.0, max_value= 1500.0, step = 0.5)
     living_area = st.number_input(label = "What is the total living area (m²)?", min_value = 50.0, max_value= 350.0, step = 0.5 )
 
     select_state = st.selectbox (label = "What is the state of the house?", options= list(states.keys()), index = 1)
@@ -80,20 +80,24 @@ def main():
             "bathrooms": bathrooms,
             "facades": facades,
             "has_garden": has_garden,
-            "kitchen": has_equipped_kitchen,
+            "has_equipped_kitchen": has_equipped_kitchen,
             "has_terrace": has_terrace,
             "has_attic": has_attic,
             "has_basement": has_basement,
-            "epc": epcs[select_epc],
+            "epc": select_epc,
             "area_total": area_total
             }
         
     if st.button(label = "Predict Price"):
-        predict =  Predict(data)
-        st.success(f"The predicted price for your house is €{int(predict.result)}.")
+        URL = "https://immo-eliza-deployment-o9qq.onrender.com/predict"
+        r = requests.post(URL, json = data)
+        result = r.json()
+        predict = result["prediction"]
+        print (result)
+    
+        st.success(f"The predicted price for your house is €{int(predict)}.")
 
         st.write (f"Your house compared to others in {district}:")
-
         # Start plots      
 
         
@@ -101,7 +105,7 @@ def main():
 
         data_plot = "./plots/cleaned_houses.csv"
         plots = Plots(file = data_plot, district = district )
-        price_plot = plots.price_sqm(prediction = predict.result, living_area = living_area)
+        price_plot = plots.price_sqm(prediction = predict, living_area = living_area)
         
         st.plotly_chart(price_plot , use_container_width=True, sharing="streamlit", theme="streamlit")      
 
