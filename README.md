@@ -15,7 +15,7 @@ And now we are deploying those models in two ways: via FastAPI and Streamlit.
 ## Table of Contents
 
 - [Usage: FastAPI](#fastapi)
-- [Useage: Streamlit](#streamlit)
+- [Usage: Streamlit](#streamlit)
 - [Model](#model)
 - [File structure](#structure)
 - [Timeline](#timeline)
