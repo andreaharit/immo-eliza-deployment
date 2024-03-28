@@ -60,8 +60,8 @@ This is the [link](https://immo-eliza-deployment-1-rhgt.onrender.com/) for the w
 The app calculates the price based on the user input and displays some plots comparing the house with other metrics in the same districts.
 
 
-<div style="overflow-x: hidden; overflow-y: scroll; max-height: 300px;">
-    <img src="img\streamlit_example.jpg" alt="Streamlit app" style="width: 100%; height: auto;">
+<div style="max-height: 300px;">
+    <img src="img\streamlit_example.jpg" alt="Streamlit app" style="width: auto; height: 300px;">
 </div>
 
 <a id="model"></a>
