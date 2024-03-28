@@ -51,6 +51,14 @@ The API will return a json with the predicted price in euros:
       "prediction": int
     }
     
+The post request can be made as:
+
+        import requests
+        URL = "https://immo-eliza-deployment-o9qq.onrender.com/predict"
+        r = requests.post(URL, json = data)
+        result = r.json()
+        predict = result["prediction"]
+        
 The [API docs](https://immo-eliza-deployment-o9qq.onrender.com/docs) contain further explanations and constraints about the parameters.
 
 <a id="streamlit"></a> 
