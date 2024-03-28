@@ -64,9 +64,8 @@ The [API docs](https://immo-eliza-deployment-o9qq.onrender.com/docs) contain fur
 <a id="streamlit"></a> 
 
 ### Streamlit 🖱️
-This is the [link](https://immo-eliza-deployment-1-rhgt.onrender.com/) for the webapp with an user interface for inputting data.
-The app calculates the price based on the user input and displays some plots comparing the house with other metrics in the same districts.
-
+This is the [link](https://immo-eliza-deployment-1-rhgt.onrender.com/) for the webapp with an user interface for inputting data. The app then sends the input to the FastAPI for the price prediction.
+With the result the Streamlit app plots a histogram and two piecharts comparing the house with others in the same districts.
 
 <div style="max-height: 300px;">
     <img src="img\streamlit_example.jpg" alt="Streamlit app" style="width: auto; height: 300px;">
