@@ -111,3 +111,46 @@ class Plots:
             ]
         )
         return fig
+
+
+    def charc_plot(self):
+        # Select df of the district
+        df = self.df_district 
+        # Select only the characteristics for the plot
+        df_yn = df[['has_garden', 'kitchen', 'has_terrace','has_attic', 'has_basement']]
+        df_yn.replace(to_replace=0, value= "No", inplace=True)
+        df_yn.replace(to_replace=1, value= "Yes", inplace=True)
+
+        # Manually build a df to have the % of yes and no for each characteristic
+        # Probably there are much better ways, but this was faster to do
+        cat= ['has_garden', 'kitchen', 'has_terrace','has_attic', 'has_basement']
+        category= []
+        label =[]
+        number = []
+
+        for column in cat:
+            category.append(column)
+            category.append(column)
+            yes_count = df_yn[column].value_counts()['Yes']
+            no_count = df_yn[column].value_counts()['No']
+            label.append("yes")
+            label.append("no")
+            total = yes_count + no_count
+            number.append(round(yes_count *100/total, 2))
+            number.append(round(no_count *100/total, 2))
+
+        data = { "Characteristic": category, "Has" : label, "Percentage" : number}
+
+
+        dataf = pd.DataFrame(data)
+        # Rename the labels, because renaming in the bar plot wasnt working for mysterious reasons
+        dataf.replace(to_replace="kitchen", value= "Equip. Kitchen", inplace=True)
+        dataf.replace(to_replace="has_garden", value= "Garden", inplace=True)
+        dataf.replace(to_replace="has_terrace", value= "Terrace", inplace=True)
+        dataf.replace(to_replace="has_attic", value= "Attic", inplace=True)
+        dataf.replace(to_replace="has_basement", value= "Basement", inplace=True)
+        
+        # Make the bar plot
+        fig = px.bar(dataf, x= "Characteristic", y="Percentage", hover_data={"Percentage": True, "Has": False, "Characteristic": False },  color='Has', text = "Has" )
+        fig.update_layout(showlegend=False)
+        return fig
