@@ -164,7 +164,7 @@ def main():
 
         # Puts plots into a container with tabs for better UX
         with st.container():
-            tab1, tab2= st.tabs(["Price/living Area", "Rooms distribution"])
+            tab1, tab2, tab3 = st.tabs(["Price/living Area", "Rooms distribution", "Characteristics"])
             with tab1:
                 # Plot for price and living area via plotly
                 price_plot = plots.price_sqm(prediction = predict, living_area = living_area)                
@@ -181,8 +181,14 @@ def main():
                     # Bathroom piechart
                     pie_bathroom = plots.pie_chart(feature="bathrooms", feature_name="Bathrooms", home_value= bathrooms)
                     st.plotly_chart(pie_bathroom , use_container_width=True, sharing="streamlit", theme="streamlit")
-        
-    
+            
+            with tab3:
+
+                char = plots.charc_plot()
+                st.plotly_chart(char , use_container_width=True, sharing="streamlit", theme="streamlit")            
+
+
+
 
 
 if __name__ == "__main__":
