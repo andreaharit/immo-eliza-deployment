@@ -49,10 +49,16 @@ def main():
     select_epc = st.select_slider(label ="What is the house's EPC?", options = epcs, value = "A")
     bedrooms = st.slider(label = "What is the number of bedrooms?", min_value=1, max_value= 15)
     bathrooms = st.slider(label = "What is the number of bathrooms?", min_value=1, max_value= 10)
-    facades = st.slider(label = "How many exposed façades?", min_value=1, max_value=4)
+
+    # Divide in columns so the fake label can be on the left of the options for facades
+    colA, colB, colC = st.columns(3)
+    with colA:
+        st.write("How many exposed façades?")
+    with colB:
+        facades = st.radio(label = "How many exposed façades?", options=[1,2,3,4], horizontal = True, label_visibility= "collapsed")
 
     # For boolean variables
-    # Divides them into columns for better redability 
+    # Divides them into columns for better redability of the toggle options
     col_1, col_2 = st.columns(2)
 
     with col_1:
