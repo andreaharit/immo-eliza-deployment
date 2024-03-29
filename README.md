@@ -51,14 +51,21 @@ The API will return a json with the predicted price in euros:
       "prediction": int
     }
     
+The post request can be made as:
+
+        import requests
+        URL = "https://immo-eliza-deployment-o9qq.onrender.com/predict"
+        r = requests.post(URL, json = data)
+        result = r.json()
+        predict = result["prediction"]
+        
 The [API docs](https://immo-eliza-deployment-o9qq.onrender.com/docs) contain further explanations and constraints about the parameters.
 
 <a id="streamlit"></a> 
 
 ### Streamlit 🖱️
-This is the [link](https://immo-eliza-deployment-1-rhgt.onrender.com/) for the webapp with an user interface for inputting data.
-The app calculates the price based on the user input and displays some plots comparing the house with other metrics in the same districts.
-
+This is the [link](https://immo-eliza-deployment-1-rhgt.onrender.com/) for the webapp with an user interface for inputting data. The app then sends the input to the FastAPI for the price prediction.
+With the result the Streamlit app plots a histogram and two piecharts comparing the house with others in the same districts.
 
 <div style="max-height: 300px;">
     <img src="img\streamlit_example.jpg" alt="Streamlit app" style="width: auto; height: 300px;">
