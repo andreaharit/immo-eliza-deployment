@@ -43,8 +43,8 @@ def main():
 
     # Begins selection tools
     district = st.selectbox(label = "In which district is the house located?", options = districts)
-    area_total = st.number_input(label = "What is the total area of the house (m²)?", value = 100.0, min_value = 50.0, max_value= 1500.0, step = 0.5)
-    living_area = st.number_input(label = "What is the total living area (m²)?", value = 100.0, min_value = 50.0, max_value= 350.0, step = 0.5 )
+    area_total = st.number_input(label = "What is the total area of the house (m²)?", value = 100.0, min_value = 50.0, max_value= 1500.0, step = 1)
+    living_area = st.number_input(label = "What is the total living area (m²)?", value = 100.0, min_value = 50.0, max_value= 350.0, step = 1 )
     select_state = st.selectbox (label = "What is the state of the house?", options= list(states.keys()), index = 1)
     select_epc = st.select_slider(label ="What is the house's EPC?", options = epcs, value = "A")
     bedrooms = st.slider(label = "What is the number of bedrooms?", min_value=1, max_value= 15)
